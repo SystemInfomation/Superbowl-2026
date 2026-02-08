@@ -8,9 +8,13 @@ import ScoreboardHeader from '@/components/ScoreboardHeader'
 import CountdownOrClock from '@/components/CountdownOrClock'
 import LiveScoreBox from '@/components/LiveScoreBox'
 import WinProbabilityGauge from '@/components/WinProbabilityGauge'
+import WinProbabilityChart from '@/components/WinProbabilityChart'
 import PlayByPlayFeed from '@/components/PlayByPlayFeed'
 import ScoringSummary from '@/components/ScoringSummary'
+import BoxScoreTables from '@/components/BoxScoreTables'
+import PlayerLeaders from '@/components/PlayerLeaders'
 import GameStateOverlay from '@/components/GameStateOverlay'
+import TabsNavigation from '@/components/TabsNavigation'
 
 /**
  * Super Bowl LX Live Dashboard - Main Page
@@ -119,8 +123,37 @@ export default function Home() {
               <ScoringSummary gameData={gameData} />
             </div>
 
-            {/* Play-by-Play Feed */}
-            <PlayByPlayFeed gameData={gameData} />
+            {/* Tabbed Content */}
+            <div className="mb-8">
+              <TabsNavigation
+                tabs={[
+                  {
+                    id: 'plays',
+                    label: 'PLAY-BY-PLAY',
+                    icon: '🏈',
+                    content: <PlayByPlayFeed gameData={gameData} />,
+                  },
+                  {
+                    id: 'stats',
+                    label: 'BOX SCORE',
+                    icon: '📊',
+                    content: <BoxScoreTables gameData={gameData} />,
+                  },
+                  {
+                    id: 'leaders',
+                    label: 'LEADERS',
+                    icon: '⭐',
+                    content: <PlayerLeaders gameData={gameData} />,
+                  },
+                  {
+                    id: 'winprob',
+                    label: 'WIN PROB',
+                    icon: '📈',
+                    content: <WinProbabilityChart gameData={gameData} />,
+                  },
+                ]}
+              />
+            </div>
           </>
         )}
 
