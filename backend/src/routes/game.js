@@ -61,16 +61,21 @@ const pickTeam = (competitors, abbr) => {
   return competitors.find((c) => c?.team?.abbreviation === abbr) || null;
 };
 
-const mapSummaryToDashboard = (eventId, summaryJson, pbpJson) => {
+const mapSummaryToDashboard = (eventId, summaryJson, pbpJson, patriotsRosterData, seahawksRosterData) => {
   const header = summaryJson?.header;
   const competition = summaryJson?.header?.competitions?.[0];
   const competitors = competition?.competitors || [];
+  const boxscore = summaryJson?.boxscore;
 
   const ne = pickTeam(competitors, SUPER_BOWL_TEAMS.homeAbbr);
   const sea = pickTeam(competitors, SUPER_BOWL_TEAMS.awayAbbr);
 
   const situation = summaryJson?.situation;
   const possessionAbbr = situation?.possession || situation?.possessionText;
+
+  // Get roster data
+  const patriotsRoster = patriotsRosterData?.team?.athletes || [];
+  const seahawksRoster = seahawksRosterData?.team?.athletes || [];
 
   const drives = summaryJson?.drives;
   const currentDrive = drives?.current;
@@ -96,22 +101,72 @@ const mapSummaryToDashboard = (eventId, summaryJson, pbpJson) => {
     const stats = team?.statistics || [];
     const statMap = {};
     stats.forEach(stat => {
-      statMap[stat.name] = stat.value;
+      statMap[stat.name] = stat.displayValue || stat.value;
     });
     return statMap;
   };
 
-  // Extract player statistics
-  const getPlayerStats = (team) => {
-    const players = team?.roster?.players || [];
-    return players.map(player => ({
-      id: player?.id,
-      name: player?.displayName,
-      position: player?.position?.abbreviation,
-      jersey: player?.jersey,
-      stats: player?.statistics || [],
-      headshot: player?.headshot?.href
-    })).filter(p => p.stats.length > 0); // Only include players with stats
+  // Extract comprehensive player statistics from boxscore and merge with roster
+  const getPlayerStats = (boxscore, teamAbbr, rosterData) => {
+    const playersMap = new Map();
+    
+    // First, get all players from roster
+    (rosterData || []).forEach(athlete => {
+      playersMap.set(athlete.id, {
+        id: athlete.id,
+        name: athlete.displayName,
+        shortName: athlete.shortName,
+        position: athlete.position?.abbreviation,
+        jersey: athlete.jersey,
+        headshot: athlete.headshot?.href,
+        statCategories: {}
+      });
+    });
+    
+    // Then add stats from boxscore if available
+    if (boxscore?.players) {
+      const teamPlayers = boxscore.players.find(
+        t => t.team?.abbreviation === teamAbbr
+      );
+      
+      if (teamPlayers?.statistics) {
+        // Process each stat category (passing, rushing, receiving, defense, etc.)
+        teamPlayers.statistics.forEach(statCategory => {
+          const categoryName = statCategory.name; // e.g., "passing", "rushing"
+          const categoryLabels = statCategory.labels || []; // Column headers
+          
+          (statCategory.athletes || []).forEach(athlete => {
+            const playerId = athlete.athlete?.id;
+            
+            const playerStats = {};
+            (athlete.stats || []).forEach((statValue, index) => {
+              const label = categoryLabels[index] || `stat${index}`;
+              playerStats[label] = statValue;
+            });
+            
+            if (playersMap.has(playerId)) {
+              // Add stats to existing player
+              playersMap.get(playerId).statCategories[categoryName] = playerStats;
+            } else {
+              // Create new player entry if not in roster
+              playersMap.set(playerId, {
+                id: playerId,
+                name: athlete.athlete?.displayName,
+                shortName: athlete.athlete?.shortName,
+                position: athlete.athlete?.position?.abbreviation,
+                jersey: athlete.athlete?.jersey,
+                headshot: athlete.athlete?.headshot?.href,
+                statCategories: {
+                  [categoryName]: playerStats
+                }
+              });
+            }
+          });
+        });
+      }
+    }
+    
+    return Array.from(playersMap.values());
   };
 
   // Extract scoring plays
@@ -146,7 +201,7 @@ const mapSummaryToDashboard = (eventId, summaryJson, pbpJson) => {
         record: ne?.team?.record,
         logo: ne?.team?.logo,
         stats: getTeamStats(ne),
-        players: getPlayerStats(ne)
+        players: getPlayerStats(boxscore, SUPER_BOWL_TEAMS.homeAbbr, patriotsRoster)
       },
       seahawks: {
         name: sea?.team?.displayName,
@@ -157,7 +212,7 @@ const mapSummaryToDashboard = (eventId, summaryJson, pbpJson) => {
         record: sea?.team?.record,
         logo: sea?.team?.logo,
         stats: getTeamStats(sea),
-        players: getPlayerStats(sea)
+        players: getPlayerStats(boxscore, SUPER_BOWL_TEAMS.awayAbbr, seahawksRoster)
       }
     },
     fieldPosition: situation?.yardLine ? {
@@ -212,7 +267,7 @@ const fetchTonightSuperBowlData = async () => {
   // Use the specific Super Bowl game ID
   const eventId = '401772988';
 
-  const [summaryRes, pbpRes] = await Promise.all([
+  const [summaryRes, pbpRes, patriotsRosterRes, seahawksRosterRes] = await Promise.all([
     axios.get(ESPN_SUMMARY, {
       params: { event: eventId },
       headers: ESPN_HEADERS,
@@ -222,10 +277,26 @@ const fetchTonightSuperBowlData = async () => {
       params: { xhr: 1, gameId: eventId },
       headers: ESPN_HEADERS,
       timeout: 10000
-    })
+    }),
+    // Fetch Patriots roster (Team ID: 17)
+    axios.get('https://site.api.espn.com/apis/site/v2/sports/football/nfl/teams/17', {
+      headers: ESPN_HEADERS,
+      timeout: 10000
+    }).catch(() => ({ data: null })),
+    // Fetch Seahawks roster (Team ID: 26)
+    axios.get('https://site.api.espn.com/apis/site/v2/sports/football/nfl/teams/26', {
+      headers: ESPN_HEADERS,
+      timeout: 10000
+    }).catch(() => ({ data: null }))
   ]);
 
-  return mapSummaryToDashboard(eventId, summaryRes.data, pbpRes.data);
+  return mapSummaryToDashboard(
+    eventId, 
+    summaryRes.data, 
+    pbpRes.data,
+    patriotsRosterRes.data,
+    seahawksRosterRes.data
+  );
 };
 
 // GET /api/game - Get current game data
@@ -245,7 +316,7 @@ router.get('/game/test', async (req, res) => {
   try {
     const eventId = '401772988';
     
-    const [summaryRes, pbpRes] = await Promise.all([
+    const [summaryRes, pbpRes, patriotsRosterRes, seahawksRosterRes] = await Promise.all([
       axios.get(ESPN_SUMMARY, {
         params: { event: eventId },
         headers: ESPN_HEADERS,
@@ -255,10 +326,18 @@ router.get('/game/test', async (req, res) => {
         params: { xhr: 1, gameId: eventId },
         headers: ESPN_HEADERS,
         timeout: 10000
-      })
+      }),
+      axios.get('https://site.api.espn.com/apis/site/v2/sports/football/nfl/teams/17', {
+        headers: ESPN_HEADERS,
+        timeout: 10000
+      }).catch(() => ({ data: null })),
+      axios.get('https://site.api.espn.com/apis/site/v2/sports/football/nfl/teams/26', {
+        headers: ESPN_HEADERS,
+        timeout: 10000
+      }).catch(() => ({ data: null }))
     ]);
 
-    const gameData = mapSummaryToDashboard(eventId, summaryRes.data, pbpRes.data);
+    const gameData = mapSummaryToDashboard(eventId, summaryRes.data, pbpRes.data, patriotsRosterRes.data, seahawksRosterRes.data);
     
     // Return a summary of what data is available
     res.json({
