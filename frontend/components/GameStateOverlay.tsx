@@ -203,7 +203,7 @@ export default function GameStateOverlay({ gameData }: GameStateOverlayProps) {
               transition={{ delay: 1.2 }}
               className="font-montserrat text-gray-400"
             >
-              <p>Levi's Stadium, Santa Clara, CA</p>
+              <p>Levi&apos;s Stadium, Santa Clara, CA</p>
               <p className="text-sm mt-2">February 8, 2026</p>
             </motion.div>
           </motion.div>

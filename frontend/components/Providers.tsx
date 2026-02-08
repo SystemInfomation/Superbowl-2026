@@ -17,7 +17,7 @@ export default function Providers({ children }: ProvidersProps) {
         defaultOptions: {
           queries: {
             staleTime: 2 * 1000, // Data is fresh for 2 seconds
-            refetchInterval: 3 * 1000, // Refetch every 3 seconds
+            refetchInterval: 1 * 1000, // Refetch every 1 second
             refetchOnWindowFocus: true,
             retry: 3,
           },

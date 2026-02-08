@@ -26,7 +26,7 @@ export default function ScoreboardHeader() {
           Seattle Seahawks vs. New England Patriots
         </p>
         <p className="text-gray-400">
-          Levi's Stadium • Santa Clara, CA • February 8, 2026 • 6:30 PM EST
+          Levi&apos;s Stadium • Santa Clara, CA • February 8, 2026 • 6:30 PM EST
         </p>
         <p className="text-gray-500 text-xs mt-2">
           Broadcast: NBC / Peacock

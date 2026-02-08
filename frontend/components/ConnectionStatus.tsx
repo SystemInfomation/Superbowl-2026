@@ -79,7 +79,7 @@ export default function ConnectionStatus({ isError, isFetching, lastUpdateTime }
               'Updating...'
             ) : (
               <>
-                Live • Updates every 3s
+                Live • Updates every 1s
                 {lastUpdateTime && (
                   <span className="ml-2 text-gray-500">
                     • {timeSinceUpdate}

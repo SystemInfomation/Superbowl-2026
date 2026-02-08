@@ -74,7 +74,7 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
               </h2>
               
               <p className="font-montserrat text-gray-400 mb-6">
-                Don't worry - we're working on getting you back to the game!
+                Don&apos;t worry - we&apos;re working on getting you back to the game!
               </p>
               
               {this.state.errorCount <= 3 && (

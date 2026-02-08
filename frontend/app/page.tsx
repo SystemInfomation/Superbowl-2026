@@ -24,11 +24,11 @@ import ParticleBackground from '@/components/ParticleBackground'
  * Real-time game tracker with ESPN API integration
  */
 export default function Home() {
-  // Fetch game data with TanStack Query (auto-refetch every 3 seconds)
+  // Fetch game data with TanStack Query (auto-refetch every 1 second)
   const { data: gameData, error, isLoading, isFetching, dataUpdatedAt } = useQuery({
     queryKey: ['gameData'],
     queryFn: fetchGameData,
-    refetchInterval: 3 * 1000, // Poll every 3 seconds for real-time updates
+    refetchInterval: 1 * 1000, // Poll every 1 second for real-time updates
     refetchOnWindowFocus: true,
     retry: 3,
   })
@@ -191,7 +191,7 @@ export default function Home() {
                 <div className="bg-black/40 rounded-xl p-4 border border-white/10">
                   <h3 className="font-orbitron text-white mb-2">📍 Venue</h3>
                   <p className="font-montserrat text-sm text-gray-400">
-                    Levi's Stadium, Santa Clara, CA
+                    Levi&apos;s Stadium, Santa Clara, CA
                   </p>
                 </div>
               </div>

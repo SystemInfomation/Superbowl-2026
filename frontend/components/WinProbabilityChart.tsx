@@ -25,7 +25,7 @@ export default function WinProbabilityChart({ gameData }: WinProbabilityChartPro
           Historical Win Probability
         </div>
         <div className="font-montserrat text-sm text-gray-400 mt-2 max-w-md mx-auto">
-          ESPN's API does not provide historical win probability data in a format suitable for charting.
+          ESPN&apos;s API does not provide historical win probability data in a format suitable for charting.
           The current win probability is shown in the gauge above.
         </div>
         {gameData.winProbability && (
