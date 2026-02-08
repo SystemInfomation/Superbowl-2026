@@ -24,11 +24,11 @@ import ParticleBackground from '@/components/ParticleBackground'
  * Real-time game tracker with ESPN API integration
  */
 export default function Home() {
-  // Fetch game data with TanStack Query (auto-refetch every 5 seconds)
+  // Fetch game data with TanStack Query (auto-refetch every 3 seconds)
   const { data: gameData, error, isLoading, isFetching, dataUpdatedAt } = useQuery({
     queryKey: ['gameData'],
     queryFn: fetchGameData,
-    refetchInterval: 5 * 1000, // Poll every 5 seconds for real-time updates
+    refetchInterval: 3 * 1000, // Poll every 3 seconds for real-time updates
     refetchOnWindowFocus: true,
     retry: 3,
   })

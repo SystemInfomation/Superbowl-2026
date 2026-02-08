@@ -68,19 +68,81 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
+// System status endpoint - Comprehensive health check
+app.get('/api/status', async (req, res) => {
+  try {
+    const mongoStatus = mongoose.connection.readyState === 1 ? 'connected' : 'disconnected';
+    
+    // Test MongoDB by doing a simple query
+    let dbTest = 'unknown';
+    try {
+      await mongoose.connection.db.admin().ping();
+      dbTest = 'responsive';
+    } catch (err) {
+      dbTest = 'unresponsive';
+    }
+
+    const Vote = require('./models/Vote');
+    const voteCount = await Vote.countDocuments();
+
+    res.json({
+      status: 'ok',
+      timestamp: new Date().toISOString(),
+      uptime: process.uptime(),
+      environment: process.env.NODE_ENV || 'development',
+      server: {
+        port: PORT,
+        nodeVersion: process.version,
+        platform: process.platform,
+        memory: {
+          used: Math.round(process.memoryUsage().heapUsed / 1024 / 1024),
+          total: Math.round(process.memoryUsage().heapTotal / 1024 / 1024),
+          unit: 'MB'
+        }
+      },
+      database: {
+        status: mongoStatus,
+        test: dbTest,
+        totalVotes: voteCount
+      },
+      endpoints: {
+        health: '/health',
+        status: '/api/status',
+        votes: '/api/votes',
+        votesStats: '/api/votes/stats',
+        game: '/api/game',
+        gameTest: '/api/game/test'
+      }
+    });
+  } catch (error) {
+    console.error('Error in status endpoint:', error);
+    res.status(500).json({
+      status: 'error',
+      timestamp: new Date().toISOString(),
+      error: error.message
+    });
+  }
+});
+
 // Root endpoint
 app.get('/', (req, res) => {
   res.json({
     message: 'Super Bowl LX (2026) Voting API',
     endpoints: {
+      system: {
+        health: '/health - Quick health check',
+        status: '/api/status - Comprehensive system status'
+      },
       votes: {
         get: '/api/votes - Get current vote counts',
-        post: '/api/votes - Submit a vote (body: { team: "patriots" | "seahawks" })'
+        post: '/api/votes - Submit a vote (body: { team: "patriots" | "seahawks" })',
+        stats: '/api/votes/stats - Get detailed voting statistics',
+        reset: '/api/votes/reset - Reset all votes (DELETE)'
       },
       game: {
-        get: '/api/game - Get real-time game data and scores'
-      },
-      health: '/health - Health check'
+        get: '/api/game - Get real-time game data and scores',
+        test: '/api/game/test - Test game data structure'
+      }
     }
   });
 });
