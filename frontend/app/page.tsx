@@ -428,17 +428,6 @@ export default function Home() {
             </div>
           </div>
         </motion.div>
-
-        {/* Footer */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8, delay: 0.8 }}
-          className="text-center mt-12 text-gray-500 font-montserrat text-sm"
-        >
-          <p>Super Bowl LX (2026) - Voting Application</p>
-          <p className="mt-2">Built with Next.js, Express, MongoDB & ❤️</p>
-        </motion.div>
       </div>
 
       {/* Share Dialog */}
