@@ -3,6 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const votesRouter = require('./routes/votes');
+const gameRouter = require('./routes/game');
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -60,6 +61,7 @@ connectDB();
 
 // Routes
 app.use('/api', votesRouter);
+app.use('/api', gameRouter);
 
 // Health check endpoint
 app.get('/health', (req, res) => {
@@ -74,6 +76,9 @@ app.get('/', (req, res) => {
       votes: {
         get: '/api/votes - Get current vote counts',
         post: '/api/votes - Submit a vote (body: { team: "patriots" | "seahawks" })'
+      },
+      game: {
+        get: '/api/game - Get real-time game data and scores'
       },
       health: '/health - Health check'
     }

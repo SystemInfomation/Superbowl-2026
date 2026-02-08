@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { toast } from 'react-hot-toast'
 import confetti from 'canvas-confetti'
 import useSWR from 'swr'
+import GameDashboard from './components/GameDashboard'
 
 const API_URL = 'https://superbowl-2026.onrender.com'
 const KICKOFF_DATE = new Date('2026-02-08T18:30:00-05:00')
@@ -18,6 +19,11 @@ interface VoteData {
     patriots: number
     seahawks: number
   }
+}
+
+interface GameData {
+  gameStarted: boolean
+  status: string
 }
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json())
@@ -43,6 +49,18 @@ export default function Home() {
         seahawks: 0,
         total: 0,
         percentages: { patriots: 0, seahawks: 0 },
+      },
+    }
+  )
+
+  const { data: gameData } = useSWR<GameData>(
+    `${API_URL}/api/game`,
+    fetcher,
+    {
+      refreshInterval: 5000, // Poll every 5 seconds
+      fallbackData: {
+        gameStarted: false,
+        status: 'PREGAME'
       },
     }
   )
@@ -191,6 +209,11 @@ export default function Home() {
   }
 
   const canVote = !hasVoted && !isVotingClosed
+
+  // Show game dashboard if game has started
+  if (gameData?.gameStarted) {
+    return <GameDashboard />
+  }
 
   return (
     <main className="min-h-screen relative">
