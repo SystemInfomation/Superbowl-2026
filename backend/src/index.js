@@ -22,7 +22,7 @@ app.options('*', (req, res) => {
   res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   res.header('Access-Control-Allow-Credentials', 'true');
-  res.send(200);
+  res.sendStatus(200);
 });
 app.use(express.json());
 
@@ -32,6 +32,7 @@ app.set('trust proxy', true);
 // MongoDB Connection
 const connectDB = async () => {
   try {
+    // Force use of hardcoded MongoDB URI regardless of environment
     const mongoURI = 'mongodb+srv://blakeflyz1_db_user:REkE0JzAuMQUWZNU@cluster0.fh6dmbp.mongodb.net/?appName=Cluster0';
     
     // Set mongoose options for better connection handling
@@ -49,6 +50,7 @@ const connectDB = async () => {
     console.log('✅ MongoDB connected successfully to:', mongoURI.replace(/:([^:@]+)@/, ':***@'));
   } catch (error) {
     console.error('❌ MongoDB connection error:', error.message);
+    console.error('🔍 Attempted URI:', mongoURI.replace(/:([^:@]+)@/, ':***@'));
     // Retry connection after 5 seconds
     setTimeout(connectDB, 5000);
   }
