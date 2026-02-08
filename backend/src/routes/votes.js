@@ -91,4 +91,60 @@ router.post('/votes', async (req, res) => {
   }
 });
 
+// GET /api/votes/stats - Get detailed voting statistics
+router.get('/votes/stats', async (req, res) => {
+  try {
+    const patriotsCount = await Vote.countDocuments({ team: 'patriots' });
+    const seahawksCount = await Vote.countDocuments({ team: 'seahawks' });
+    const totalVotes = patriotsCount + seahawksCount;
+
+    // Get recent votes
+    const recentVotes = await Vote.find()
+      .sort({ votedAt: -1 })
+      .limit(10)
+      .select('team votedAt -_id');
+
+    // Get votes per hour for the last 24 hours
+    const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    const votesLast24h = await Vote.countDocuments({ 
+      votedAt: { $gte: oneDayAgo } 
+    });
+
+    res.json({
+      totals: {
+        patriots: patriotsCount,
+        seahawks: seahawksCount,
+        total: totalVotes,
+        percentages: {
+          patriots: totalVotes > 0 ? Math.round((patriotsCount / totalVotes) * 100) : 0,
+          seahawks: totalVotes > 0 ? Math.round((seahawksCount / totalVotes) * 100) : 0
+        }
+      },
+      recent: recentVotes,
+      analytics: {
+        votesLast24Hours: votesLast24h,
+        averageVotesPerHour: totalVotes > 0 ? Math.round(votesLast24h / 24) : 0
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching vote stats:', error);
+    res.status(500).json({ error: 'Failed to fetch vote statistics' });
+  }
+});
+
+// DELETE /api/votes/reset - Reset all votes (for testing/admin purposes)
+router.delete('/votes/reset', async (req, res) => {
+  try {
+    const result = await Vote.deleteMany({});
+    res.json({
+      success: true,
+      message: 'All votes have been reset',
+      deletedCount: result.deletedCount
+    });
+  } catch (error) {
+    console.error('Error resetting votes:', error);
+    res.status(500).json({ error: 'Failed to reset votes' });
+  }
+});
+
 module.exports = router;
