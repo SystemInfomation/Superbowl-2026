@@ -4,6 +4,20 @@ A complete, production-ready voting poll application for Super Bowl LX (2026) - 
 
 > **Game Date:** February 8, 2026, 6:30 PM EST
 
+## 🌐 Live Application
+
+**Frontend**: https://superbowl-2026.vercel.app/
+
+**Backend API**: https://superbowl-2026.onrender.com/
+
+## 📸 Screenshots
+
+### Desktop View
+![Desktop View](https://github.com/user-attachments/assets/78db6b4f-c760-40ad-8b51-79c21ed6de44)
+
+### Mobile View
+![Mobile View](https://github.com/user-attachments/assets/9ae460c9-6958-4ec4-b0aa-cca0823377da)
+
 ## 🎯 Overview
 
 This is a modern, visually stunning monorepo application that allows users to vote for their favorite team in Super Bowl LX. The application features:
@@ -12,14 +26,15 @@ This is a modern, visually stunning monorepo application that allows users to vo
 - ⏱️ **Live Countdown Timer** to kickoff
 - 📊 **Real-time Vote Results** with animated progress bars
 - 🎉 **Confetti Animations** on vote submission
-- 📱 **Fully Responsive** design
+- 📱 **Fully Responsive** design (desktop, tablet, mobile)
 - 🔒 **One Vote Per User** (localStorage + optional IP hashing)
+- 🔄 **Auto-refreshing** vote counts every 5 seconds
 
 ## 🏗️ Monorepo Structure
 
 ```
 Superbowl-2026/
-├── frontend/          # Next.js 14 (App Router) application
+├── frontend/          # Next.js 16 (App Router) application
 │   ├── app/           # App Router pages and layouts
 │   ├── public/        # Static assets
 │   └── package.json
@@ -31,7 +46,10 @@ Superbowl-2026/
 │   │   └── index.js   # Server entry point
 │   └── package.json
 │
-└── README.md          # This file
+├── README.md          # This file
+├── DEPLOYMENT.md      # Deployment guide
+├── TESTING.md         # Testing guide
+└── PROJECT.md         # Detailed project documentation
 ```
 
 ## 🚀 Quick Start
@@ -104,49 +122,85 @@ Frontend will run on `http://localhost:3000`
 ## 📦 Tech Stack
 
 ### Frontend
-- **Next.js 14** with App Router
+- **Next.js 16** with App Router (upgraded for security)
 - **TypeScript**
 - **Tailwind CSS** for styling
-- **Framer Motion** for animations
-- **React Hot Toast** for notifications
-- **Canvas Confetti** for celebrations
-- **SWR** for real-time data fetching
+- **Framer Motion** for smooth animations
+- **React Hot Toast** for toast notifications
+- **Canvas Confetti** for celebration effects
+- **SWR** for real-time data fetching with auto-refresh
 
 ### Backend
-- **Node.js** + **Express**
-- **MongoDB** + **Mongoose**
-- **CORS** enabled
-- **IP Hashing** for vote deduplication
+- **Node.js** + **Express** 4.18.2
+- **MongoDB** + **Mongoose** 8.0.3
+- **CORS** enabled for cross-origin requests
+- **IP Hashing** for vote deduplication (optional)
+- **dotenv** for environment configuration
 
 ## 🎨 Design Features
 
 - Dark mode base with vibrant neon glows
-- Animated grid background with subtle parallax
+- Animated grid background with subtle pulsing
 - Split-screen aesthetic with team-colored gradients
-- Team logos from official sources
-- Hover effects with scale and neon glow
-- Smooth progress bar animations
-- Confetti burst on vote submission
-- Fully responsive (mobile & desktop)
+- Official team logos from Wikimedia
+- Hover effects with scale transformation and neon glow
+- Smooth progress bar fill animations
+- Full-screen confetti burst on vote submission
+- Fully responsive (mobile: stacked cards, desktop: side-by-side)
+- Google Fonts: Bebas Neue, Orbitron, Montserrat
 
 ## 🌐 Deployment
-
-### Backend (Recommended: Render.com)
-
-1. Create a new Web Service on Render
-2. Connect your GitHub repository
-3. Set root directory to `/backend`
-4. Set build command: `npm install`
-5. Set start command: `npm start`
-6. Add environment variables (MONGODB_URI, PORT, etc.)
-7. Deploy!
 
 ### Frontend (Recommended: Vercel)
 
 1. Import project on Vercel
-2. Set root directory to `/frontend`
+2. **Important for Monorepo**: Set root directory to `frontend`
 3. Add environment variable: `NEXT_PUBLIC_API_URL=<your-backend-url>`
 4. Deploy!
+
+**Note**: The included `vercel.json` file configures automatic routing for monorepo deployments.
+
+### Backend (Recommended: Render.com)
+
+1. Create a new Web Service on Render
+2. Set root directory to `backend`
+3. Add environment variables:
+   - `MONGODB_URI`: Your MongoDB Atlas connection string
+   - `PORT`: 4000 (or leave empty)
+   - `NODE_ENV`: production
+   - `FRONTEND_URL`: Your deployed frontend URL
+4. Deploy!
+
+📖 See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed deployment instructions.
+
+## 🧪 Testing
+
+Comprehensive testing guide available in [TESTING.md](./TESTING.md).
+
+Quick checks:
+```bash
+# Build frontend
+cd frontend && npm run build
+
+# Test backend API
+curl http://localhost:4000/api/votes
+```
+
+## 📚 Documentation
+
+- **[QUICKSTART.md](./QUICKSTART.md)** - Quick start guide with live URLs
+- **[DEPLOYMENT.md](./DEPLOYMENT.md)** - Step-by-step deployment guide
+- **[TESTING.md](./TESTING.md)** - Comprehensive testing procedures
+- **[PROJECT.md](./PROJECT.md)** - Detailed project documentation with API specs
+- **[PRODUCTION.md](./PRODUCTION.md)** - Production configuration and monitoring
+
+## 🚀 Quick Start
+
+### Live Application
+Visit **https://superbowl-2026.vercel.app/** to start voting!
+
+### Local Development
+See [QUICKSTART.md](./QUICKSTART.md) for detailed instructions.
 
 ## 📝 API Endpoints
 
