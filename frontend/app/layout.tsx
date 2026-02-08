@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import './globals.css'
 import { Toaster } from 'react-hot-toast'
 import Providers from '../components/Providers'
+import { ErrorBoundary } from '../components/ErrorBoundary'
 
 export const metadata: Metadata = {
   title: 'Super Bowl LX Live Dashboard - Patriots vs Seahawks | February 8, 2026',
@@ -76,9 +77,11 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Orbitron:wght@400..900&family=Montserrat:wght@100..900&display=swap" rel="stylesheet" />
       </head>
       <body>
-        <Providers>
-          {children}
-        </Providers>
+        <ErrorBoundary>
+          <Providers>
+            {children}
+          </Providers>
+        </ErrorBoundary>
         <Toaster
           position="top-center"
           toastOptions={{

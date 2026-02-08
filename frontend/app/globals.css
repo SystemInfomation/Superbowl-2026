@@ -27,6 +27,7 @@ body {
   overflow-x: hidden;
 }
 
+/* Enhanced Animated Grid Background with Depth */
 .animated-grid-bg {
   position: fixed;
   top: 0;
@@ -37,18 +38,20 @@ body {
   background-image: 
     repeating-linear-gradient(
       0deg,
-      rgba(255, 255, 255, 0.03) 0px,
+      rgba(255, 255, 255, 0.04) 0px,
       transparent 1px,
       transparent 40px,
-      rgba(255, 255, 255, 0.03) 41px
+      rgba(255, 255, 255, 0.04) 41px
     ),
     repeating-linear-gradient(
       90deg,
-      rgba(255, 255, 255, 0.03) 0px,
+      rgba(255, 255, 255, 0.04) 0px,
       transparent 1px,
       transparent 40px,
-      rgba(255, 255, 255, 0.03) 41px
-    );
+      rgba(255, 255, 255, 0.04) 41px
+    ),
+    radial-gradient(circle at 50% 50%, rgba(198, 12, 48, 0.1), transparent 50%),
+    radial-gradient(circle at 0% 0%, rgba(105, 190, 40, 0.1), transparent 50%);
   animation: gridPulse 8s ease-in-out infinite;
 }
 
@@ -57,44 +60,63 @@ body {
     opacity: 0.5;
   }
   50% {
-    opacity: 0.8;
+    opacity: 0.9;
   }
 }
 
+/* Enhanced Gradients with Multiple Stops */
 .gradient-patriots {
-  background: linear-gradient(135deg, rgba(0, 34, 68, 0.6) 0%, rgba(198, 12, 48, 0.4) 100%);
+  background: linear-gradient(135deg, 
+    rgba(0, 34, 68, 0.7) 0%, 
+    rgba(198, 12, 48, 0.5) 50%,
+    rgba(0, 34, 68, 0.7) 100%);
 }
 
 .gradient-seahawks {
-  background: linear-gradient(135deg, rgba(0, 34, 68, 0.6) 0%, rgba(105, 190, 40, 0.4) 100%);
+  background: linear-gradient(135deg, 
+    rgba(0, 34, 68, 0.7) 0%, 
+    rgba(105, 190, 40, 0.5) 50%,
+    rgba(0, 34, 68, 0.7) 100%);
 }
 
+/* Enhanced Multi-Layer Neon Glows */
 .neon-glow-patriots {
   box-shadow: 
+    0 0 10px rgba(198, 12, 48, 0.6),
     0 0 20px rgba(198, 12, 48, 0.5),
-    0 0 40px rgba(198, 12, 48, 0.3),
-    0 0 60px rgba(198, 12, 48, 0.2);
+    0 0 40px rgba(198, 12, 48, 0.4),
+    0 0 60px rgba(198, 12, 48, 0.3),
+    0 0 80px rgba(198, 12, 48, 0.2),
+    inset 0 0 20px rgba(198, 12, 48, 0.1);
 }
 
 .neon-glow-seahawks {
   box-shadow: 
+    0 0 10px rgba(105, 190, 40, 0.6),
     0 0 20px rgba(105, 190, 40, 0.5),
-    0 0 40px rgba(105, 190, 40, 0.3),
-    0 0 60px rgba(105, 190, 40, 0.2);
+    0 0 40px rgba(105, 190, 40, 0.4),
+    0 0 60px rgba(105, 190, 40, 0.3),
+    0 0 80px rgba(105, 190, 40, 0.2),
+    inset 0 0 20px rgba(105, 190, 40, 0.1);
 }
 
+/* Enhanced Text Glows with Multiple Layers */
 .text-glow-patriots {
   text-shadow: 
+    0 0 5px rgba(198, 12, 48, 1),
     0 0 10px rgba(198, 12, 48, 0.8),
     0 0 20px rgba(198, 12, 48, 0.6),
-    0 0 30px rgba(198, 12, 48, 0.4);
+    0 0 30px rgba(198, 12, 48, 0.4),
+    0 0 40px rgba(198, 12, 48, 0.2);
 }
 
 .text-glow-seahawks {
   text-shadow: 
+    0 0 5px rgba(105, 190, 40, 1),
     0 0 10px rgba(105, 190, 40, 0.8),
     0 0 20px rgba(105, 190, 40, 0.6),
-    0 0 30px rgba(105, 190, 40, 0.4);
+    0 0 30px rgba(105, 190, 40, 0.4),
+    0 0 40px rgba(105, 190, 40, 0.2);
 }
 
 @keyframes float {
@@ -123,55 +145,115 @@ body {
   animation: pulse-glow 2s ease-in-out infinite;
 }
 
-/* Custom Scrollbar */
+/* Enhanced Custom Scrollbar with Gradient */
 .custom-scrollbar::-webkit-scrollbar {
-  width: 8px;
+  width: 10px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.4);
   border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
   background: linear-gradient(180deg, #c60c30 0%, #69be28 100%);
   border-radius: 10px;
+  border: 2px solid rgba(0, 0, 0, 0.4);
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(180deg, #e60e38 0%, #7cd630 100%);
+  box-shadow: 0 0 10px rgba(198, 12, 48, 0.5), 0 0 10px rgba(105, 190, 40, 0.5);
 }
 
 /* Firefox */
 .custom-scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: #c60c30 rgba(0, 0, 0, 0.3);
+  scrollbar-color: #c60c30 rgba(0, 0, 0, 0.4);
 }
 
-/* Score update animation */
+/* Score update animation with bounce */
 @keyframes scoreUpdate {
   0%, 100% {
     transform: scale(1);
   }
+  25% {
+    transform: scale(1.3);
+  }
   50% {
-    transform: scale(1.2);
+    transform: scale(1.1);
+  }
+  75% {
+    transform: scale(1.25);
   }
 }
 
 .animate-score-update {
-  animation: scoreUpdate 0.6s ease-in-out;
+  animation: scoreUpdate 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 
-/* Touchdown celebration glow */
+/* Enhanced Touchdown celebration glow */
 @keyframes touchdownGlow {
   0%, 100% {
     box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
   }
+  25% {
+    box-shadow: 0 0 40px rgba(255, 215, 0, 0.6), 0 0 80px rgba(255, 215, 0, 0.4);
+  }
   50% {
-    box-shadow: 0 0 60px rgba(255, 215, 0, 0.8), 0 0 100px rgba(255, 215, 0, 0.5);
+    box-shadow: 0 0 60px rgba(255, 215, 0, 0.8), 0 0 100px rgba(255, 215, 0, 0.5), 0 0 140px rgba(255, 215, 0, 0.3);
+  }
+  75% {
+    box-shadow: 0 0 40px rgba(255, 215, 0, 0.6), 0 0 80px rgba(255, 215, 0, 0.4);
   }
 }
 
 .animate-touchdown-glow {
   animation: touchdownGlow 1s ease-in-out infinite;
+}
+
+/* Glassmorphism utility class */
+.glass {
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-strong {
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* Shimmer effect for loading states */
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.shimmer {
+  animation: shimmer 2s infinite linear;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  background-size: 1000px 100%;
+}
+
+/* 3D Transform hover effects */
+.hover-3d {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hover-3d:hover {
+  transform: translateY(-5px) scale(1.02);
 }

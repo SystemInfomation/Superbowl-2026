@@ -1,6 +1,7 @@
 /**
  * ESPN API client for Super Bowl LX Live Dashboard
  * Fetches real-time game data from backend which connects to ESPN
+ * Enhanced with retry logic and comprehensive error handling
  */
 
 import { GameData } from './types'
@@ -8,26 +9,92 @@ import { GameData } from './types'
 // Backend API URL - use environment variable or fallback to production
 export const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://superbowl-2026.onrender.com'
 
+// Retry configuration
+const MAX_RETRIES = 3
+const RETRY_DELAY = 1000 // 1 second
+
+/**
+ * Sleep utility for retry delays
+ */
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
+
+/**
+ * Fetch with retry logic
+ */
+async function fetchWithRetry(url: string, options: RequestInit, retries = MAX_RETRIES): Promise<Response> {
+  try {
+    const response = await fetch(url, options)
+    
+    // If response is ok, return it
+    if (response.ok) {
+      return response
+    }
+    
+    // If it's a client error (4xx), don't retry
+    if (response.status >= 400 && response.status < 500) {
+      return response
+    }
+    
+    // For server errors (5xx), retry
+    if (retries > 0) {
+      console.warn(`API request failed with status ${response.status}, retrying... (${retries} retries left)`)
+      await sleep(RETRY_DELAY)
+      return fetchWithRetry(url, options, retries - 1)
+    }
+    
+    return response
+  } catch (error) {
+    // Network errors - retry if retries left
+    if (retries > 0) {
+      console.warn(`Network error, retrying... (${retries} retries left)`, error)
+      await sleep(RETRY_DELAY)
+      return fetchWithRetry(url, options, retries - 1)
+    }
+    
+    throw error
+  }
+}
+
 /**
  * Fetch current game data from backend
  * Backend handles ESPN API calls and parsing
+ * NO MOCK DATA - all real ESPN data
  */
 export async function fetchGameData(): Promise<GameData> {
-  const response = await fetch(`${API_URL}/api/game`, {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    // Don't cache on client side - we want fresh data
-    cache: 'no-store',
-  })
+  try {
+    const response = await fetchWithRetry(`${API_URL}/api/game`, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      // Don't cache on client side - we want fresh data
+      cache: 'no-store',
+    })
 
-  if (!response.ok) {
-    const error = await response.json().catch(() => ({ error: 'Failed to fetch game data' }))
-    throw new Error(error.error || `HTTP ${response.status}`)
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({ 
+        error: `HTTP ${response.status}: Failed to fetch game data` 
+      }))
+      throw new Error(error.error || `HTTP ${response.status}`)
+    }
+
+    const data = await response.json()
+    
+    // Validate response structure
+    if (!data || typeof data !== 'object') {
+      throw new Error('Invalid response format from API')
+    }
+    
+    return data as GameData
+  } catch (error) {
+    console.error('Error fetching game data:', error)
+    
+    // Enhance error message for better user experience
+    if (error instanceof TypeError && error.message.includes('fetch')) {
+      throw new Error('Unable to connect to the game server. Please check your internet connection.')
+    }
+    
+    throw error
   }
-
-  const data = await response.json()
-  return data as GameData
 }
 
 /**

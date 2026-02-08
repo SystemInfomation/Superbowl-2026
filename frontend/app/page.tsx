@@ -16,17 +16,19 @@ import PlayerLeaders from '@/components/PlayerLeaders'
 import GameStateOverlay from '@/components/GameStateOverlay'
 import TabsNavigation from '@/components/TabsNavigation'
 import FieldView from '@/components/FieldView'
+import ConnectionStatus from '@/components/ConnectionStatus'
+import ParticleBackground from '@/components/ParticleBackground'
 
 /**
  * Super Bowl LX Live Dashboard - Main Page
  * Real-time game tracker with ESPN API integration
  */
 export default function Home() {
-  // Fetch game data with TanStack Query (auto-refetch every 10 seconds)
-  const { data: gameData, error, isLoading } = useQuery({
+  // Fetch game data with TanStack Query (auto-refetch every 5 seconds)
+  const { data: gameData, error, isLoading, isFetching, dataUpdatedAt } = useQuery({
     queryKey: ['gameData'],
     queryFn: fetchGameData,
-    refetchInterval: 10 * 1000, // Poll every 10 seconds
+    refetchInterval: 5 * 1000, // Poll every 5 seconds for real-time updates
     refetchOnWindowFocus: true,
     retry: 3,
   })
@@ -85,6 +87,9 @@ export default function Home() {
 
   return (
     <main className="min-h-screen relative">
+      {/* Particle Background */}
+      <ParticleBackground />
+      
       {/* Animated Grid Background */}
       <div className="animated-grid-bg" />
 
@@ -197,20 +202,12 @@ export default function Home() {
           </motion.div>
         )}
 
-        {/* Auto-refresh indicator */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.6 }}
-          className="mt-8 text-center"
-        >
-          <div className="inline-flex items-center gap-2 bg-black/30 backdrop-blur-sm rounded-full px-4 py-2 border border-white/10">
-            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-            <span className="font-montserrat text-xs text-gray-400">
-              Auto-updating every 10 seconds
-            </span>
-          </div>
-        </motion.div>
+        {/* Connection Status */}
+        <ConnectionStatus 
+          isError={!!error}
+          isFetching={isFetching}
+          lastUpdateTime={dataUpdatedAt ? new Date(dataUpdatedAt) : undefined}
+        />
       </div>
 
       {/* Game State Overlays (Halftime, Final) */}

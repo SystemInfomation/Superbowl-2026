@@ -23,16 +23,16 @@ export default function LiveScoreBox({ gameData }: LiveScoreBoxProps) {
       transition={{ duration: 0.6, delay: 0.3 }}
       className="max-w-6xl mx-auto mb-8"
     >
-      <div className="bg-black/60 backdrop-blur-md rounded-3xl p-6 md:p-8 border border-white/20 shadow-2xl">
+      <div className="glass-strong rounded-3xl p-6 md:p-8 shadow-2xl hover-3d">
         {/* Main Scoreboard */}
         <div className="grid grid-cols-3 gap-4 md:gap-6 items-center mb-6">
           {/* Seahawks (Away) */}
           <motion.div
-            whileHover={{ scale: 1.02 }}
-            className={`text-center p-4 md:p-6 rounded-2xl transition-all ${
+            whileHover={{ scale: 1.02, rotateY: 2 }}
+            className={`text-center p-4 md:p-6 rounded-2xl transition-all hover-3d ${
               seahawks.possession
                 ? 'bg-seahawks-green/20 border-2 border-seahawks-green neon-glow-seahawks'
-                : 'bg-black/40 border-2 border-white/10'
+                : 'glass border-2 border-white/10'
             }`}
           >
             <img
@@ -82,7 +82,7 @@ export default function LiveScoreBox({ gameData }: LiveScoreBoxProps) {
           <div className="text-center space-y-3">
             {/* Down & Distance */}
             {gameData.down && gameData.yardsToGo && (
-              <div className="bg-black/40 rounded-xl p-3 border border-white/10">
+              <div className="glass rounded-xl p-3 border border-white/10 shimmer">
                 <div className="font-orbitron text-lg md:text-xl text-white">
                   {formatDownAndDistance(gameData.down, gameData.yardsToGo)}
                 </div>
@@ -91,7 +91,7 @@ export default function LiveScoreBox({ gameData }: LiveScoreBoxProps) {
 
             {/* Field Position */}
             {gameData.fieldPosition && (
-              <div className="bg-black/40 rounded-xl p-3 border border-white/10">
+              <div className="glass rounded-xl p-3 border border-white/10 shimmer">
                 <div className="text-xs text-gray-400 mb-1">Ball On</div>
                 <div className="font-orbitron text-white">
                   {formatFieldPosition(gameData.fieldPosition)}
@@ -112,11 +112,11 @@ export default function LiveScoreBox({ gameData }: LiveScoreBoxProps) {
 
           {/* Patriots (Home) */}
           <motion.div
-            whileHover={{ scale: 1.02 }}
-            className={`text-center p-4 md:p-6 rounded-2xl transition-all ${
+            whileHover={{ scale: 1.02, rotateY: -2 }}
+            className={`text-center p-4 md:p-6 rounded-2xl transition-all hover-3d ${
               patriots.possession
                 ? 'bg-patriots-red/20 border-2 border-patriots-red neon-glow-patriots'
-                : 'bg-black/40 border-2 border-white/10'
+                : 'glass border-2 border-white/10'
             }`}
           >
             <img

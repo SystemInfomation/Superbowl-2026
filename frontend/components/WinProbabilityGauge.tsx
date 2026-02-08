@@ -28,22 +28,22 @@ export default function WinProbabilityGauge({ gameData }: WinProbabilityGaugePro
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay: 0.4 }}
-      className="bg-black/60 backdrop-blur-md rounded-2xl p-6 border border-white/20"
+      className="glass-strong rounded-2xl p-6 shadow-2xl hover-3d"
     >
       <h3 className="font-orbitron text-xl md:text-2xl text-white mb-6 text-center">
         WIN PROBABILITY
       </h3>
 
       {/* Visual Bar */}
-      <div className="relative h-16 md:h-20 bg-gray-800 rounded-full overflow-hidden mb-6">
+      <div className="relative h-16 md:h-20 bg-gray-900/50 rounded-full overflow-hidden mb-6 border border-white/10">
         {/* Patriots side */}
         <motion.div
           initial={{ width: '50%' }}
           animate={{ width: `${patriotsWin}%` }}
           transition={{ duration: 1, ease: 'easeOut' }}
-          className="absolute left-0 top-0 h-full bg-gradient-to-r from-patriots-red to-patriots-navy flex items-center justify-start pl-4 md:pl-6"
+          className="absolute left-0 top-0 h-full bg-gradient-to-r from-patriots-red via-patriots-navy to-patriots-red flex items-center justify-start pl-4 md:pl-6 neon-glow-patriots"
         >
-          <span className="font-bebas text-xl md:text-3xl text-white drop-shadow-lg">
+          <span className="font-bebas text-xl md:text-3xl text-white drop-shadow-lg text-glow-patriots">
             {patriotsWin.toFixed(1)}%
           </span>
         </motion.div>
