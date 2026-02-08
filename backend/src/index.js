@@ -32,11 +32,25 @@ app.set('trust proxy', true);
 // MongoDB Connection
 const connectDB = async () => {
   try {
-    await mongoose.connect('mongodb+srv://blakeflyz1_db_user:REkE0JzAuMQUWZNU@cluster0.fh6dmbp.mongodb.net/?appName=Cluster0');
-    console.log('✅ MongoDB connected successfully');
+    const mongoURI = 'mongodb+srv://blakeflyz1_db_user:REkE0JzAuMQUWZNU@cluster0.fh6dmbp.mongodb.net/?appName=Cluster0';
+    
+    // Set mongoose options for better connection handling
+    mongoose.set('strictQuery', false);
+    
+    await mongoose.connect(mongoURI, {
+      serverSelectionTimeoutMS: 10000,
+      socketTimeoutMS: 45000,
+      bufferCommands: false,
+      maxPoolSize: 10,
+      retryWrites: true,
+      writeConcern: { w: 'majority' }
+    });
+    
+    console.log('✅ MongoDB connected successfully to:', mongoURI.replace(/:([^:@]+)@/, ':***@'));
   } catch (error) {
-    console.error('❌ MongoDB connection error:', error);
-    process.exit(1);
+    console.error('❌ MongoDB connection error:', error.message);
+    // Retry connection after 5 seconds
+    setTimeout(connectDB, 5000);
   }
 };
 
