@@ -152,12 +152,15 @@ The backend is already deployed and configured at https://superbowl-2026.onrende
 
 - **Event ID**: `401772988`
 - **Summary Endpoint**: `https://site.api.espn.com/apis/site/v2/sports/football/nfl/summary?event=401772988`
+- **Patriots Roster** (Team ID 17): `https://site.api.espn.com/apis/site/v2/sports/football/nfl/teams/17`
+- **Seahawks Roster** (Team ID 26): `https://site.api.espn.com/apis/site/v2/sports/football/nfl/teams/26`
 - **Play-by-Play Endpoint**: ESPN CDN
 - **Polling Interval**: 10 seconds (TanStack Query)
-- **Data Points**:
+
+**Data Points:**
   - Live scores and game clock
   - Quarter and game status
-  - Possession indicator
+  - Possession indicator (with 🏈 ball emoji)
   - Down and distance
   - Field position
   - Timeout counts
@@ -165,8 +168,17 @@ The backend is already deployed and configured at https://superbowl-2026.onrende
   - Play-by-play feed
   - Scoring plays
   - Team statistics
-  - Player statistics and leaders
+  - **Full player rosters** (all positions, headshots, jerseys)
+  - **Active players** (those with stats in current game)
   - Drive information
+
+**Player Data Integration:**
+  - Complete rosters from ESPN team endpoints
+  - Player headshots, names, positions, jersey numbers
+  - Live game statistics merged with roster data
+  - Active player highlighting
+  - Visual field view with players arranged by team
+  - Possession indicator showing which team has the ball
 
 ## 🌐 Deployment
 
