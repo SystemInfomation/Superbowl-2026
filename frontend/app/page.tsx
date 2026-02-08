@@ -17,6 +17,7 @@ import GameStateOverlay from '@/components/GameStateOverlay'
 import TabsNavigation from '@/components/TabsNavigation'
 import FieldView from '@/components/FieldView'
 import ConnectionStatus from '@/components/ConnectionStatus'
+import ParticleBackground from '@/components/ParticleBackground'
 
 /**
  * Super Bowl LX Live Dashboard - Main Page
@@ -86,6 +87,9 @@ export default function Home() {
 
   return (
     <main className="min-h-screen relative">
+      {/* Particle Background */}
+      <ParticleBackground />
+      
       {/* Animated Grid Background */}
       <div className="animated-grid-bg" />
 

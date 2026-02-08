@@ -11,6 +11,9 @@
   },
   "dependencies": {
     "@tanstack/react-query": "^5.17.19",
+    "@tsparticles/engine": "^3.9.1",
+    "@tsparticles/react": "^3.0.0",
+    "@tsparticles/slim": "^3.9.1",
     "canvas-confetti": "^1.9.2",
     "framer-motion": "^10.16.16",
     "next": "^16.1.6",
