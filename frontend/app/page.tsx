@@ -119,14 +119,11 @@ export default function Home() {
             <LiveScoreBox gameData={gameData} />
 
             {/* Stats Grid */}
-            <div className="grid md:grid-cols-2 gap-6 mb-8">
+            <div className="grid md:grid-cols-1 gap-6 mb-8">
               {/* Win Probability */}
               {gameData.winProbability && (
                 <WinProbabilityGauge gameData={gameData} />
               )}
-
-              {/* Scoring Summary */}
-              <ScoringSummary gameData={gameData} />
             </div>
 
             {/* Tabbed Content */}
@@ -208,6 +205,18 @@ export default function Home() {
           isFetching={isFetching}
           lastUpdateTime={dataUpdatedAt ? new Date(dataUpdatedAt) : undefined}
         />
+
+        {/* Scoring Summary at bottom */}
+        {gameData.gameStarted && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.8 }}
+            className="mt-8"
+          >
+            <ScoringSummary gameData={gameData} />
+          </motion.div>
+        )}
       </div>
 
       {/* Game State Overlays (Halftime, Final) */}

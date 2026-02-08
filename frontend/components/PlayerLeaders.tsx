@@ -57,51 +57,54 @@ export default function PlayerLeaders({ gameData }: PlayerLeadersProps) {
 
             {/* Leaders */}
             <div className="space-y-3">
-              {category.leaders.slice(0, 3).map((leader, leaderIndex) => (
-                <div
-                  key={leader.athlete.id}
-                  className={`flex items-center gap-3 ${
-                    leaderIndex === 0 ? 'bg-gradient-to-r from-yellow-500/10 to-transparent rounded-lg p-2' : ''
-                  }`}
-                >
-                  {/* Rank */}
-                  <div className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
-                    leaderIndex === 0
-                      ? 'bg-yellow-500 text-black'
-                      : leaderIndex === 1
-                      ? 'bg-gray-400 text-black'
-                      : 'bg-gray-600 text-white'
-                  }`}>
-                    {leaderIndex + 1}
-                  </div>
-
-                  {/* Player Photo */}
-                  {leader.athlete.headshot && (
-                    <img
-                      src={leader.athlete.headshot}
-                      alt={leader.athlete.displayName}
-                      className="w-10 h-10 rounded-full border-2 border-white/20"
-                    />
-                  )}
-
-                  {/* Player Info */}
-                  <div className="flex-1 min-w-0">
-                    <div className="font-montserrat text-white text-sm truncate">
-                      {leader.athlete.shortName || leader.athlete.displayName}
+              {category.leaders.slice(0, 3).map((leader, leaderIndex) => {
+                const athlete = leader.athlete || {};
+                return (
+                  <div
+                    key={athlete.id || leaderIndex}
+                    className={`flex items-center gap-3 ${
+                      leaderIndex === 0 ? 'bg-gradient-to-r from-yellow-500/10 to-transparent rounded-lg p-2' : ''
+                    }`}
+                  >
+                    {/* Rank */}
+                    <div className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                      leaderIndex === 0
+                        ? 'bg-yellow-500 text-black'
+                        : leaderIndex === 1
+                        ? 'bg-gray-400 text-black'
+                        : 'bg-gray-600 text-white'
+                    }`}>
+                      {leaderIndex + 1}
                     </div>
-                    <div className="font-orbitron text-xs text-gray-400">
-                      {leader.displayValue}
-                    </div>
-                  </div>
 
-                  {/* Value */}
-                  <div className="flex-shrink-0">
-                    <div className="font-orbitron text-lg text-white">
-                      {leader.value}
+                    {/* Player Photo */}
+                    {athlete.headshot && (
+                      <img
+                        src={athlete.headshot}
+                        alt={athlete.displayName}
+                        className="w-10 h-10 rounded-full border-2 border-white/20"
+                      />
+                    )}
+
+                    {/* Player Info */}
+                    <div className="flex-1 min-w-0">
+                      <div className="font-montserrat text-white text-sm truncate">
+                        {athlete.shortName || athlete.displayName}
+                      </div>
+                      <div className="font-orbitron text-xs text-gray-400">
+                        {leader.displayValue}
+                      </div>
+                    </div>
+
+                    {/* Value */}
+                    <div className="flex-shrink-0">
+                      <div className="font-orbitron text-lg text-white">
+                        {leader.value}
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </motion.div>
         ))}

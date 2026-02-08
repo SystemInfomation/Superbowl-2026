@@ -57,15 +57,25 @@ export default function LiveScoreBox({ gameData }: LiveScoreBoxProps) {
             <AnimatePresence>
               {seahawks.possession && (
                 <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
+                  initial={{ opacity: 0, scale: 0.8, y: -10 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.8, y: -10 }}
                   className="mt-3"
                 >
-                  <div className="inline-flex items-center gap-2 bg-seahawks-green text-white px-3 py-1 rounded-full text-sm font-bold">
-                    <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
-                    BALL
-                  </div>
+                  <motion.div 
+                    className="inline-flex items-center gap-2 bg-seahawks-green text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg shadow-seahawks-green/50"
+                    animate={{ 
+                      boxShadow: ["0 0 20px rgba(105, 190, 40, 0.5)", "0 0 30px rgba(105, 190, 40, 0.8)", "0 0 20px rgba(105, 190, 40, 0.5)"]
+                    }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                  >
+                    <motion.div 
+                      className="w-3 h-3 bg-white rounded-full"
+                      animate={{ scale: [1, 1.5, 1] }}
+                      transition={{ duration: 1, repeat: Infinity }}
+                    />
+                    <span>🏈 BALL</span>
+                  </motion.div>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -141,15 +151,25 @@ export default function LiveScoreBox({ gameData }: LiveScoreBoxProps) {
             <AnimatePresence>
               {patriots.possession && (
                 <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
+                  initial={{ opacity: 0, scale: 0.8, y: -10 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.8, y: -10 }}
                   className="mt-3"
                 >
-                  <div className="inline-flex items-center gap-2 bg-patriots-red text-white px-3 py-1 rounded-full text-sm font-bold">
-                    <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
-                    BALL
-                  </div>
+                  <motion.div 
+                    className="inline-flex items-center gap-2 bg-patriots-red text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg shadow-patriots-red/50"
+                    animate={{ 
+                      boxShadow: ["0 0 20px rgba(198, 12, 48, 0.5)", "0 0 30px rgba(198, 12, 48, 0.8)", "0 0 20px rgba(198, 12, 48, 0.5)"]
+                    }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                  >
+                    <motion.div 
+                      className="w-3 h-3 bg-white rounded-full"
+                      animate={{ scale: [1, 1.5, 1] }}
+                      transition={{ duration: 1, repeat: Infinity }}
+                    />
+                    <span>🏈 BALL</span>
+                  </motion.div>
                 </motion.div>
               )}
             </AnimatePresence>
