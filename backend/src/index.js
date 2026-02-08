@@ -109,7 +109,7 @@ app.get('/api/status', async (req, res) => {
         health: '/health',
         status: '/api/status',
         votes: '/api/votes',
-        voteStats: '/api/votes/stats',
+        votesStats: '/api/votes/stats',
         game: '/api/game',
         gameTest: '/api/game/test'
       }

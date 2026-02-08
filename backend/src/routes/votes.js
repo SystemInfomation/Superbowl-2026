@@ -123,7 +123,7 @@ router.get('/votes/stats', async (req, res) => {
       recent: recentVotes,
       analytics: {
         votesLast24Hours: votesLast24h,
-        averageVotesPerHour: totalVotes > 0 ? Math.round(votesLast24h / 24) : 0
+        averageVotesPerHour: votesLast24h > 0 ? Math.round(votesLast24h / 24) : 0
       }
     });
   } catch (error) {
@@ -133,8 +133,12 @@ router.get('/votes/stats', async (req, res) => {
 });
 
 // DELETE /api/votes/reset - Reset all votes (for testing/admin purposes)
+// WARNING: This endpoint should be protected with authentication in production
 router.delete('/votes/reset', async (req, res) => {
   try {
+    // TODO: Add authentication middleware before deploying to production
+    // Example: if (!req.user || !req.user.isAdmin) return res.status(403).json({ error: 'Unauthorized' });
+    
     const result = await Vote.deleteMany({});
     res.json({
       success: true,
