@@ -91,6 +91,43 @@ const mapSummaryToDashboard = (eventId, summaryJson, pbpJson) => {
   const period = header?.competitions?.[0]?.status?.period;
   const clock = header?.competitions?.[0]?.status?.displayClock;
 
+  // Extract team statistics
+  const getTeamStats = (team) => {
+    const stats = team?.statistics || [];
+    const statMap = {};
+    stats.forEach(stat => {
+      statMap[stat.name] = stat.value;
+    });
+    return statMap;
+  };
+
+  // Extract player statistics
+  const getPlayerStats = (team) => {
+    const players = team?.roster?.players || [];
+    return players.map(player => ({
+      id: player?.id,
+      name: player?.displayName,
+      position: player?.position?.abbreviation,
+      jersey: player?.jersey,
+      stats: player?.statistics || [],
+      headshot: player?.headshot?.href
+    })).filter(p => p.stats.length > 0); // Only include players with stats
+  };
+
+  // Extract scoring plays
+  const getScoringPlays = () => {
+    const scoringPlays = summaryJson?.scoringPlays || [];
+    return scoringPlays.map(play => ({
+      id: play?.id,
+      text: play?.text,
+      period: play?.period?.number,
+      clock: play?.clock?.displayValue,
+      scoringTeam: play?.team?.abbreviation,
+      type: play?.type?.text,
+      points: play?.points
+    }));
+  };
+
   const gameStarted = new Date() >= SUPER_BOWL_KICKOFF;
 
   return {
@@ -105,14 +142,22 @@ const mapSummaryToDashboard = (eventId, summaryJson, pbpJson) => {
         abbreviation: ne?.team?.abbreviation,
         score: Number(ne?.score ?? 0),
         timeouts: ne?.timeouts,
-        possession: possessionAbbr === SUPER_BOWL_TEAMS.homeAbbr
+        possession: possessionAbbr === SUPER_BOWL_TEAMS.homeAbbr,
+        record: ne?.team?.record,
+        logo: ne?.team?.logo,
+        stats: getTeamStats(ne),
+        players: getPlayerStats(ne)
       },
       seahawks: {
         name: sea?.team?.displayName,
         abbreviation: sea?.team?.abbreviation,
         score: Number(sea?.score ?? 0),
         timeouts: sea?.timeouts,
-        possession: possessionAbbr === SUPER_BOWL_TEAMS.awayAbbr
+        possession: possessionAbbr === SUPER_BOWL_TEAMS.awayAbbr,
+        record: sea?.team?.record,
+        logo: sea?.team?.logo,
+        stats: getTeamStats(sea),
+        players: getPlayerStats(sea)
       }
     },
     fieldPosition: situation?.yardLine ? {
@@ -123,7 +168,32 @@ const mapSummaryToDashboard = (eventId, summaryJson, pbpJson) => {
     yardsToGo: situation?.distance,
     lastPlay: lastPlayText,
     winProbability: summaryJson?.winprobability?.[0] || null,
-    plays: timeline
+    plays: timeline,
+    scoringPlays: getScoringPlays(),
+    drives: {
+      current: currentDrive ? {
+        team: currentDrive?.team?.abbreviation,
+        plays: currentDrive?.plays?.length || 0,
+        yards: currentDrive?.yards,
+        result: currentDrive?.result
+      } : null,
+      all: drives?.previous?.map(drive => ({
+        team: drive?.team?.abbreviation,
+        plays: drive?.plays?.length || 0,
+        yards: drive?.yards,
+        result: drive?.result,
+        startTime: drive?.startTime,
+        endTime: drive?.endTime
+      })) || []
+    },
+    leaders: summaryJson?.leaders || null,
+    weather: competition?.weather || null,
+    venue: {
+      name: competition?.venue?.fullName,
+      city: competition?.venue?.address?.city,
+      state: competition?.venue?.address?.state,
+      capacity: competition?.venue?.capacity
+    }
   };
 };
 
@@ -139,12 +209,8 @@ const fetchTonightSuperBowlData = async () => {
     };
   }
 
-  const eventId = await findSuperBowlEventId();
-  if (!eventId) {
-    const err = new Error('Super Bowl eventId not found on ESPN for tonight');
-    err.statusCode = 503;
-    throw err;
-  }
+  // Use the specific Super Bowl game ID
+  const eventId = '401772988';
 
   const [summaryRes, pbpRes] = await Promise.all([
     axios.get(ESPN_SUMMARY, {
@@ -171,6 +237,70 @@ router.get('/game', async (req, res) => {
     console.error('Error fetching game data:', error);
     const statusCode = error.statusCode || 500;
     res.status(statusCode).json({ error: 'Failed to fetch game data' });
+  }
+});
+
+// GET /api/game/test - Test endpoint to verify game data structure
+router.get('/game/test', async (req, res) => {
+  try {
+    const eventId = '401772988';
+    
+    const [summaryRes, pbpRes] = await Promise.all([
+      axios.get(ESPN_SUMMARY, {
+        params: { event: eventId },
+        headers: ESPN_HEADERS,
+        timeout: 10000
+      }),
+      axios.get(ESPN_PBP, {
+        params: { xhr: 1, gameId: eventId },
+        headers: ESPN_HEADERS,
+        timeout: 10000
+      })
+    ]);
+
+    const gameData = mapSummaryToDashboard(eventId, summaryRes.data, pbpRes.data);
+    
+    // Return a summary of what data is available
+    res.json({
+      success: true,
+      eventId,
+      dataStructure: {
+        hasTeams: !!(gameData.teams.patriots && gameData.teams.seahawks),
+        hasPatriotsStats: !!gameData.teams.patriots.stats,
+        hasSeahawksStats: !!gameData.teams.seahawks.stats,
+        patriotsPlayerCount: gameData.teams.patriots.players?.length || 0,
+        seahawksPlayerCount: gameData.teams.seahawks.players?.length || 0,
+        hasScoringPlays: !!(gameData.scoringPlays && gameData.scoringPlays.length > 0),
+        scoringPlayCount: gameData.scoringPlays?.length || 0,
+        hasPlays: !!(gameData.plays && gameData.plays.length > 0),
+        playCount: gameData.plays?.length || 0,
+        hasDrives: !!(gameData.drives),
+        hasVenue: !!gameData.venue,
+        hasWeather: !!gameData.weather,
+        hasLeaders: !!gameData.leaders
+      },
+      sampleData: {
+        patriots: {
+          name: gameData.teams.patriots.name,
+          score: gameData.teams.patriots.score,
+          statsKeys: Object.keys(gameData.teams.patriots.stats || {}),
+          samplePlayer: gameData.teams.patriots.players[0] || null
+        },
+        seahawks: {
+          name: gameData.teams.seahawks.name,
+          score: gameData.teams.seahawks.score,
+          statsKeys: Object.keys(gameData.teams.seahawks.stats || {}),
+          samplePlayer: gameData.teams.seahawks.players[0] || null
+        }
+      }
+    });
+  } catch (error) {
+    console.error('Error in test endpoint:', error);
+    res.status(500).json({ 
+      error: 'Failed to fetch test game data', 
+      details: error.message,
+      eventId: '401772988'
+    });
   }
 });
 
