@@ -217,12 +217,6 @@ export default function Home() {
               SUPER BOWL LX?
             </span>
           </h1>
-          <p className="font-montserrat text-lg md:text-xl lg:text-2xl text-gray-300">
-            New England Patriots vs. Seattle Seahawks
-          </p>
-          <p className="font-montserrat text-md md:text-lg text-gray-400 mt-2">
-            February 8, 2026
-          </p>
         </motion.div>
 
         {/* Countdown Timer */}
