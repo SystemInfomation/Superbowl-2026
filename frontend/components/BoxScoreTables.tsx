@@ -37,7 +37,7 @@ export default function BoxScoreTables({ gameData }: BoxScoreTablesProps) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
-      className="bg-black/60 backdrop-blur-md rounded-2xl p-6 md:p-8 border border-white/20"
+      className="glass-strong rounded-2xl p-6 md:p-8 shadow-2xl hover-3d"
     >
       <h3 className="font-orbitron text-xl md:text-2xl text-white mb-6 text-center">
         TEAM STATISTICS
@@ -108,10 +108,10 @@ export default function BoxScoreTables({ gameData }: BoxScoreTablesProps) {
                     return (
                       <div
                         key={player.id || index}
-                        className={`rounded-lg p-3 border ${
+                        className={`rounded-lg p-3 border hover-3d ${
                           hasStats 
                             ? 'bg-patriots-red/10 border-patriots-red/30' 
-                            : 'bg-black/40 border-white/10'
+                            : 'glass border-white/10'
                         }`}
                       >
                         <div className="flex items-center gap-3">
@@ -155,10 +155,10 @@ export default function BoxScoreTables({ gameData }: BoxScoreTablesProps) {
                     return (
                       <div
                         key={player.id || index}
-                        className={`rounded-lg p-3 border ${
+                        className={`rounded-lg p-3 border hover-3d ${
                           hasStats 
                             ? 'bg-seahawks-green/10 border-seahawks-green/30' 
-                            : 'bg-black/40 border-white/10'
+                            : 'glass border-white/10'
                         }`}
                       >
                         <div className="flex items-center gap-3">

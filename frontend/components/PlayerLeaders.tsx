@@ -35,7 +35,7 @@ export default function PlayerLeaders({ gameData }: PlayerLeadersProps) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
-      className="bg-black/60 backdrop-blur-md rounded-2xl p-6 md:p-8 border border-white/20"
+      className="glass-strong rounded-2xl p-6 md:p-8 shadow-2xl hover-3d"
     >
       <h3 className="font-orbitron text-xl md:text-2xl text-white mb-6 text-center">
         PLAYER LEADERS
@@ -48,7 +48,7 @@ export default function PlayerLeaders({ gameData }: PlayerLeadersProps) {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: index * 0.1 }}
-            className="bg-black/40 rounded-xl p-4 border border-white/10"
+            className="glass rounded-xl p-4 border border-white/10 hover-3d"
           >
             {/* Category Name */}
             <h4 className="font-bebas text-lg text-white mb-4 text-center border-b border-white/10 pb-2">
