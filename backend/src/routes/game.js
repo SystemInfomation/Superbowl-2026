@@ -96,13 +96,29 @@ const mapSummaryToDashboard = (eventId, summaryJson, pbpJson, patriotsRosterData
   const period = header?.competitions?.[0]?.status?.period;
   const clock = header?.competitions?.[0]?.status?.displayClock;
 
-  // Extract team statistics
-  const getTeamStats = (team) => {
-    const stats = team?.statistics || [];
+  // Extract team statistics from both competitor and boxscore
+  const getTeamStats = (team, boxscore, teamAbbr) => {
     const statMap = {};
-    stats.forEach(stat => {
+    
+    // First, get stats from competitor (live game stats)
+    const competitorStats = team?.statistics || [];
+    competitorStats.forEach(stat => {
       statMap[stat.name] = stat.displayValue || stat.value;
     });
+    
+    // Then, get stats from boxscore (more comprehensive stats)
+    if (boxscore?.teams) {
+      const boxscoreTeam = boxscore.teams.find(t => t?.team?.abbreviation === teamAbbr);
+      if (boxscoreTeam?.statistics) {
+        boxscoreTeam.statistics.forEach(stat => {
+          // Don't override live stats with season averages
+          if (!statMap[stat.name]) {
+            statMap[stat.name] = stat.displayValue || stat.value;
+          }
+        });
+      }
+    }
+    
     return statMap;
   };
 
@@ -200,7 +216,7 @@ const mapSummaryToDashboard = (eventId, summaryJson, pbpJson, patriotsRosterData
         possession: possessionAbbr === SUPER_BOWL_TEAMS.homeAbbr,
         record: ne?.team?.record,
         logo: ne?.team?.logo,
-        stats: getTeamStats(ne),
+        stats: getTeamStats(ne, boxscore, SUPER_BOWL_TEAMS.homeAbbr),
         players: getPlayerStats(boxscore, SUPER_BOWL_TEAMS.homeAbbr, patriotsRoster)
       },
       seahawks: {
@@ -211,7 +227,7 @@ const mapSummaryToDashboard = (eventId, summaryJson, pbpJson, patriotsRosterData
         possession: possessionAbbr === SUPER_BOWL_TEAMS.awayAbbr,
         record: sea?.team?.record,
         logo: sea?.team?.logo,
-        stats: getTeamStats(sea),
+        stats: getTeamStats(sea, boxscore, SUPER_BOWL_TEAMS.awayAbbr),
         players: getPlayerStats(boxscore, SUPER_BOWL_TEAMS.awayAbbr, seahawksRoster)
       }
     },
