@@ -93,7 +93,7 @@ export default function BoxScoreTables({ gameData }: BoxScoreTablesProps) {
        (seahawks.players && seahawks.players.length > 0) ? (
         <div className="mt-8">
           <h4 className="font-orbitron text-lg text-white mb-4 text-center">
-            TOP PERFORMERS
+            ACTIVE PLAYERS
           </h4>
           
           <div className="grid md:grid-cols-2 gap-6">
@@ -101,31 +101,45 @@ export default function BoxScoreTables({ gameData }: BoxScoreTablesProps) {
             {patriots.players && patriots.players.length > 0 && (
               <div>
                 <div className="font-bebas text-patriots-red text-sm mb-3">PATRIOTS</div>
-                <div className="space-y-2">
-                  {patriots.players.slice(0, 5).map((player, index) => (
-                    <div
-                      key={player.id || index}
-                      className="bg-black/40 rounded-lg p-3 border border-white/10"
-                    >
-                      <div className="flex items-center gap-3">
-                        {player.headshot && (
-                          <img
-                            src={player.headshot}
-                            alt={player.name}
-                            className="w-10 h-10 rounded-full"
-                          />
-                        )}
-                        <div className="flex-1 min-w-0">
-                          <div className="font-montserrat text-white text-sm truncate">
-                            {player.name}
-                          </div>
-                          <div className="font-montserrat text-xs text-gray-400">
-                            {player.position} {player.jersey && `• #${player.jersey}`}
+                <div className="space-y-2 max-h-96 overflow-y-auto custom-scrollbar">
+                  {patriots.players.slice(0, 15).map((player, index) => {
+                    const hasStats = player.statCategories && Object.keys(player.statCategories).length > 0
+                    
+                    return (
+                      <div
+                        key={player.id || index}
+                        className={`rounded-lg p-3 border ${
+                          hasStats 
+                            ? 'bg-patriots-red/10 border-patriots-red/30' 
+                            : 'bg-black/40 border-white/10'
+                        }`}
+                      >
+                        <div className="flex items-center gap-3">
+                          {player.headshot && (
+                            <img
+                              src={player.headshot}
+                              alt={player.name}
+                              className="w-12 h-12 rounded-full border-2 border-white/20"
+                            />
+                          )}
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2">
+                              {player.jersey && (
+                                <span className="font-orbitron text-patriots-red font-bold">#{player.jersey}</span>
+                              )}
+                              <span className="font-montserrat text-white text-sm truncate">
+                                {player.shortName || player.name}
+                              </span>
+                            </div>
+                            <div className="font-montserrat text-xs text-gray-400">
+                              {player.position}
+                              {hasStats && <span className="ml-2 text-patriots-red">• Active</span>}
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    )
+                  })}
                 </div>
               </div>
             )}
@@ -134,31 +148,45 @@ export default function BoxScoreTables({ gameData }: BoxScoreTablesProps) {
             {seahawks.players && seahawks.players.length > 0 && (
               <div>
                 <div className="font-bebas text-seahawks-green text-sm mb-3">SEAHAWKS</div>
-                <div className="space-y-2">
-                  {seahawks.players.slice(0, 5).map((player, index) => (
-                    <div
-                      key={player.id || index}
-                      className="bg-black/40 rounded-lg p-3 border border-white/10"
-                    >
-                      <div className="flex items-center gap-3">
-                        {player.headshot && (
-                          <img
-                            src={player.headshot}
-                            alt={player.name}
-                            className="w-10 h-10 rounded-full"
-                          />
-                        )}
-                        <div className="flex-1 min-w-0">
-                          <div className="font-montserrat text-white text-sm truncate">
-                            {player.name}
-                          </div>
-                          <div className="font-montserrat text-xs text-gray-400">
-                            {player.position} {player.jersey && `• #${player.jersey}`}
+                <div className="space-y-2 max-h-96 overflow-y-auto custom-scrollbar">
+                  {seahawks.players.slice(0, 15).map((player, index) => {
+                    const hasStats = player.statCategories && Object.keys(player.statCategories).length > 0
+                    
+                    return (
+                      <div
+                        key={player.id || index}
+                        className={`rounded-lg p-3 border ${
+                          hasStats 
+                            ? 'bg-seahawks-green/10 border-seahawks-green/30' 
+                            : 'bg-black/40 border-white/10'
+                        }`}
+                      >
+                        <div className="flex items-center gap-3">
+                          {player.headshot && (
+                            <img
+                              src={player.headshot}
+                              alt={player.name}
+                              className="w-12 h-12 rounded-full border-2 border-white/20"
+                            />
+                          )}
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2">
+                              {player.jersey && (
+                                <span className="font-orbitron text-seahawks-green font-bold">#{player.jersey}</span>
+                              )}
+                              <span className="font-montserrat text-white text-sm truncate">
+                                {player.shortName || player.name}
+                              </span>
+                            </div>
+                            <div className="font-montserrat text-xs text-gray-400">
+                              {player.position}
+                              {hasStats && <span className="ml-2 text-seahawks-green">• Active</span>}
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    )
+                  })}
                 </div>
               </div>
             )}

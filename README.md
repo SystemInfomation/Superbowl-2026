@@ -1,8 +1,8 @@
-# Super Bowl LX (2026) Voting Application 🏈
+# Super Bowl LX (2026) Live Dashboard 🏈
 
-A complete, production-ready voting poll application for Super Bowl LX (2026) - **New England Patriots vs. Seattle Seahawks**.
+A **production-ready, visually stunning live dashboard** for Super Bowl LX (2026) - **New England Patriots vs. Seattle Seahawks** with real-time ESPN API integration.
 
-> **Game Date:** February 8, 2026, 6:30 PM EST
+> **Game Date:** February 8, 2026, 6:30 PM EST at Levi's Stadium
 
 ## 🌐 Live Application
 
@@ -10,40 +10,58 @@ A complete, production-ready voting poll application for Super Bowl LX (2026) - 
 
 **Backend API**: https://superbowl-2026.onrender.com/
 
-## 📸 Screenshots
-
-### Desktop View
-![Desktop View](https://github.com/user-attachments/assets/78db6b4f-c760-40ad-8b51-79c21ed6de44)
-
-### Mobile View
-![Mobile View](https://github.com/user-attachments/assets/9ae460c9-6958-4ec4-b0aa-cca0823377da)
-
 ## 🎯 Overview
 
-This is a modern, visually stunning monorepo application that allows users to vote for their favorite team in Super Bowl LX. The application features:
+This is a modern, visually stunning live game tracking dashboard that displays real-time Super Bowl LX data directly from ESPN's API. The application features:
 
+- 🔴 **100% Live ESPN Data** - NO mock data, all scores/stats from ESPN API (Event ID: 401772988)
+- ⏱️ **Real-Time Updates** - Auto-refreshes every 10 seconds with TanStack Query
+- 📊 **Comprehensive Stats** - Live scores, play-by-play, win probability, team/player stats
 - 🎨 **Beautiful Dark Mode UI** with neon glows and team-colored gradients
-- ⏱️ **Live Countdown Timer** to kickoff
-- 📊 **Real-time Vote Results** with animated progress bars
-- 🎉 **Confetti Animations** on vote submission
+- 🎉 **Confetti Animations** on touchdowns and final score
 - 📱 **Fully Responsive** design (desktop, tablet, mobile)
-- 🔒 **One Vote Per User** (localStorage + optional IP hashing)
-- 🔄 **Auto-refreshing** vote counts every 5 seconds
+- 🎭 **Game State Overlays** for pre-game, halftime, and final
+- ⚡ **Smooth Animations** with Framer Motion throughout
+
+## 📸 Screenshots
+
+### Loading State
+![Loading Dashboard](https://github.com/user-attachments/assets/cfa0f47b-d28d-4760-9cf6-e1816856a75d)
 
 ## 🏗️ Monorepo Structure
 
 ```
 Superbowl-2026/
-├── frontend/          # Next.js 16 (App Router) application
+├── frontend/          # Next.js 16 (App Router) Live Dashboard
 │   ├── app/           # App Router pages and layouts
+│   │   ├── page.tsx   # Main live dashboard
+│   │   ├── layout.tsx # Root layout with providers
+│   │   └── globals.css # Global styles and animations
+│   ├── components/    # React components
+│   │   ├── ScoreboardHeader.tsx
+│   │   ├── CountdownOrClock.tsx
+│   │   ├── LiveScoreBox.tsx
+│   │   ├── WinProbabilityGauge.tsx
+│   │   ├── WinProbabilityChart.tsx
+│   │   ├── PlayByPlayFeed.tsx
+│   │   ├── ScoringSummary.tsx
+│   │   ├── BoxScoreTables.tsx
+│   │   ├── PlayerLeaders.tsx
+│   │   ├── GameStateOverlay.tsx
+│   │   ├── TabsNavigation.tsx
+│   │   └── Providers.tsx
+│   ├── lib/           # Utilities and types
+│   │   ├── espn-api.ts   # ESPN API client
+│   │   └── types.ts      # TypeScript definitions
 │   ├── public/        # Static assets
 │   └── package.json
 │
-├── backend/           # Node.js + Express + MongoDB API
+├── backend/           # Node.js + Express + ESPN API
 │   ├── src/
-│   │   ├── models/    # Mongoose schemas
-│   │   ├── routes/    # API routes
-│   │   └── index.js   # Server entry point
+│   │   ├── routes/
+│   │   │   ├── game.js    # ESPN API integration
+│   │   │   └── votes.js   # Legacy voting endpoint
+│   │   └── index.js       # Server entry point
 │   └── package.json
 │
 ├── README.md          # This file
@@ -56,41 +74,9 @@ Superbowl-2026/
 
 ### Prerequisites
 - Node.js 18+ and npm
-- MongoDB Atlas account (or local MongoDB)
+- Backend deployed at https://superbowl-2026.onrender.com/
 
-### Backend Setup
-
-1. Navigate to backend directory:
-```bash
-cd backend
-```
-
-2. Install dependencies:
-```bash
-npm install
-```
-
-3. Create `.env` file:
-```bash
-cp .env.example .env
-```
-
-4. Configure your MongoDB URI and other variables in `.env`:
-```env
-MONGODB_URI=your_mongodb_connection_string
-PORT=4000
-NODE_ENV=development
-FRONTEND_URL=http://localhost:3000
-```
-
-5. Start the server:
-```bash
-npm run dev
-```
-
-Backend will run on `http://localhost:4000`
-
-### Frontend Setup
+### Frontend Setup (Local Development)
 
 1. Navigate to frontend directory:
 ```bash
@@ -102,14 +88,14 @@ cd frontend
 npm install
 ```
 
-3. Create `.env.local` file:
+3. Create `.env.local` file (optional - uses production backend by default):
 ```bash
 cp .env.example .env.local
 ```
 
-4. Configure the API URL in `.env.local`:
+4. Configure the API URL in `.env.local` (optional):
 ```env
-NEXT_PUBLIC_API_URL=http://localhost:4000
+NEXT_PUBLIC_API_URL=https://superbowl-2026.onrender.com
 ```
 
 5. Start the development server:
@@ -119,35 +105,68 @@ npm run dev
 
 Frontend will run on `http://localhost:3000`
 
+### Backend Setup (Already Deployed)
+
+The backend is already deployed and configured at https://superbowl-2026.onrender.com/
+
+**Backend Endpoints:**
+- `GET /api/game` - Get current live game data from ESPN
+- `GET /api/game/test` - Test ESPN API integration
+- `GET /health` - Health check endpoint
+
 ## 📦 Tech Stack
 
 ### Frontend
-- **Next.js 16** with App Router (upgraded for security)
-- **TypeScript**
+- **Next.js 16** with App Router
+- **TypeScript** for type safety
 - **Tailwind CSS** for styling
+- **TanStack Query v5** for data fetching and caching (10-second polling)
 - **Framer Motion** for smooth animations
 - **React Hot Toast** for toast notifications
 - **Canvas Confetti** for celebration effects
-- **SWR** for real-time data fetching with auto-refresh
+- **Recharts** for data visualization
 
 ### Backend
 - **Node.js** + **Express** 4.18.2
-- **MongoDB** + **Mongoose** 8.0.3
+- **ESPN API Integration** (Event ID: 401772988)
 - **CORS** enabled for cross-origin requests
-- **IP Hashing** for vote deduplication (optional)
-- **dotenv** for environment configuration
+- **Real-time data parsing** from ESPN Summary and Play-by-Play endpoints
 
 ## 🎨 Design Features
 
 - Dark mode base with vibrant neon glows
 - Animated grid background with subtle pulsing
-- Split-screen aesthetic with team-colored gradients
-- Official team logos from Wikimedia
+- Split-screen aesthetic with team-colored gradients (Patriots red/navy, Seahawks green/navy)
+- Team logos from ESPN CDN (high-resolution)
 - Hover effects with scale transformation and neon glow
 - Smooth progress bar fill animations
-- Full-screen confetti burst on vote submission
+- Full-screen confetti burst on final score
+- Team-colored loading spinner
 - Fully responsive (mobile: stacked cards, desktop: side-by-side)
 - Google Fonts: Bebas Neue, Orbitron, Montserrat
+- Custom scrollbars with team colors
+
+## 🔴 Live Data Integration
+
+**All data from ESPN API - NO MOCK DATA:**
+
+- **Event ID**: `401772988`
+- **Summary Endpoint**: `https://site.api.espn.com/apis/site/v2/sports/football/nfl/summary?event=401772988`
+- **Play-by-Play Endpoint**: ESPN CDN
+- **Polling Interval**: 10 seconds (TanStack Query)
+- **Data Points**:
+  - Live scores and game clock
+  - Quarter and game status
+  - Possession indicator
+  - Down and distance
+  - Field position
+  - Timeout counts
+  - Win probability
+  - Play-by-play feed
+  - Scoring plays
+  - Team statistics
+  - Player statistics and leaders
+  - Drive information
 
 ## 🌐 Deployment
 

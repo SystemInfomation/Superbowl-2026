@@ -15,6 +15,7 @@ import BoxScoreTables from '@/components/BoxScoreTables'
 import PlayerLeaders from '@/components/PlayerLeaders'
 import GameStateOverlay from '@/components/GameStateOverlay'
 import TabsNavigation from '@/components/TabsNavigation'
+import FieldView from '@/components/FieldView'
 
 /**
  * Super Bowl LX Live Dashboard - Main Page
@@ -128,9 +129,15 @@ export default function Home() {
               <TabsNavigation
                 tabs={[
                   {
+                    id: 'field',
+                    label: 'FIELD VIEW',
+                    icon: '🏈',
+                    content: <FieldView gameData={gameData} />,
+                  },
+                  {
                     id: 'plays',
                     label: 'PLAY-BY-PLAY',
-                    icon: '🏈',
+                    icon: '📝',
                     content: <PlayByPlayFeed gameData={gameData} />,
                   },
                   {

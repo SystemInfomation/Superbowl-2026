@@ -18,10 +18,11 @@ export interface TeamData {
 export interface PlayerData {
   id?: string
   name?: string
+  shortName?: string
   position?: string
   jersey?: string
-  stats?: any[]
   headshot?: string
+  statCategories?: Record<string, Record<string, any>>
 }
 
 export interface FieldPosition {
