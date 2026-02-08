@@ -6,7 +6,7 @@ import { toast } from 'react-hot-toast'
 import confetti from 'canvas-confetti'
 import useSWR from 'swr'
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'
+const API_URL = 'https://superbowl-2026.onrender.com'
 const KICKOFF_DATE = new Date('2026-02-08T18:30:00-05:00')
 const STORAGE_KEY = 'sb2026-voted'
 
