@@ -58,10 +58,16 @@ export const metadata: Metadata = {
     yandex: 'yandex-verification-code',
   },
   icons: {
-    icon: 'https://www.nbc.com/sites/nbcblog/files/styles/scale_862/public/2026/02/super-bowl-lx-logo-.jpg',
-    shortcut: 'https://www.nbc.com/sites/nbcblog/files/styles/scale_862/public/2026/02/super-bowl-lx-logo-.jpg',
-    apple: 'https://www.nbc.com/sites/nbcblog/files/styles/scale_862/public/2026/02/super-bowl-lx-logo-.jpg',
+    icon: [
+      { url: '/icons/icon-192x192.png', sizes: '192x192', type: 'image/png' },
+      { url: '/icons/icon-512x512.png', sizes: '512x512', type: 'image/png' }
+    ],
+    shortcut: '/icons/icon-192x192.png',
+    apple: [
+      { url: '/icons/icon-152x152.png', sizes: '152x152', type: 'image/png' }
+    ],
   },
+  manifest: '/manifest.json',
 }
 
 export default function RootLayout({
@@ -75,6 +81,22 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Orbitron:wght@400..900&family=Montserrat:wght@100..900&display=swap" rel="stylesheet" />
+        
+        {/* PWA Meta Tags */}
+        <meta name="theme-color" content="#1a1a2e" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-title" content="SB LX Dashboard" />
+        <meta name="application-name" content="SB LX Dashboard" />
+        <meta name="msapplication-TileColor" content="#1a1a2e" />
+        <meta name="msapplication-config" content="/browserconfig.xml" />
+        
+        {/* PWA Icons */}
+        <link rel="apple-touch-icon" sizes="152x152" href="/icons/icon-152x152.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/icons/icon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/icons/icon-16x16.png" />
+        <link rel="manifest" href="/manifest.json" />
+        <link rel="shortcut icon" href="/icons/icon-192x192.png" />
       </head>
       <body>
         <ErrorBoundary>
