@@ -16,12 +16,22 @@ export default function WinProbabilityGauge({ gameData }: WinProbabilityGaugePro
   const { homeWinPercentage, awayWinPercentage, tiePercentage } = gameData.winProbability
 
   // Convert to percentages (ESPN returns as decimals 0-1 or already as percentages)
-  const patriotsWin = typeof homeWinPercentage === 'number' 
+  let patriotsWin = typeof homeWinPercentage === 'number' 
     ? (homeWinPercentage > 1 ? homeWinPercentage : homeWinPercentage * 100)
     : 50
-  const seahawksWin = typeof awayWinPercentage === 'number'
+  let seahawksWin = typeof awayWinPercentage === 'number'
     ? (awayWinPercentage > 1 ? awayWinPercentage : awayWinPercentage * 100)
     : 50
+  let tieWin = typeof tiePercentage === 'number'
+    ? (tiePercentage > 1 ? tiePercentage : tiePercentage * 100)
+    : 0
+
+  // Normalize to ensure they add up to 100% (excluding tie)
+  const totalWinProbability = patriotsWin + seahawksWin
+  if (totalWinProbability > 0 && totalWinProbability !== 100) {
+    patriotsWin = (patriotsWin / totalWinProbability) * (100 - tieWin)
+    seahawksWin = (seahawksWin / totalWinProbability) * (100 - tieWin)
+  }
 
   return (
     <motion.div
@@ -85,12 +95,10 @@ export default function WinProbabilityGauge({ gameData }: WinProbabilityGaugePro
       </div>
 
       {/* Tie Percentage if applicable */}
-      {tiePercentage && tiePercentage > 0 && (
+      {tieWin > 0 && (
         <div className="mt-4 text-center">
           <span className="font-montserrat text-sm text-gray-400">
-            Tie: {typeof tiePercentage === 'number' 
-              ? (tiePercentage > 1 ? tiePercentage : tiePercentage * 100).toFixed(1)
-              : 0}%
+            Tie: {tieWin.toFixed(1)}%
           </span>
         </div>
       )}

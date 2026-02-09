@@ -29,6 +29,16 @@ export default function FieldView({ gameData }: FieldViewProps) {
     return (activePlayers.length > 0 ? activePlayers : players).slice(0, maxCount)
   }
 
+  // Handle player click - open Google search
+  const handlePlayerClick = (player: any) => {
+    const playerName = player.displayName || player.name || player.shortName
+    if (playerName) {
+      const searchQuery = encodeURIComponent(`${playerName} ${player.position ? player.position + ' ' : ''}NFL player`)
+      const googleSearchUrl = `https://www.google.com/search?q=${searchQuery}`
+      window.open(googleSearchUrl, '_blank', 'noopener,noreferrer')
+    }
+  }
+
   const activePatriots = getActivePlayers(patriots.players)
   const activeSeahawks = getActivePlayers(seahawks.players)
 
@@ -84,12 +94,16 @@ export default function FieldView({ gameData }: FieldViewProps) {
                   key={player.id || index}
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                   transition={{ delay: index * 0.05 }}
-                  className={`bg-black/40 rounded-lg p-2 border ${
+                  onClick={() => handlePlayerClick(player)}
+                  className={`bg-black/40 rounded-lg p-2 border cursor-pointer transition-all duration-200 hover:shadow-lg hover:scale-105 ${
                     possessingTeam === 'seahawks' 
-                      ? 'border-seahawks-green bg-seahawks-green/10' 
-                      : 'border-white/10'
+                      ? 'border-seahawks-green bg-seahawks-green/10 hover:bg-seahawks-green/20' 
+                      : 'border-white/10 hover:border-white/30 hover:bg-white/5'
                   }`}
+                  title={`Click to search ${player.displayName || player.name || player.shortName} on Google`}
                 >
                   <div className="flex items-center gap-2">
                     {player.headshot && (
@@ -138,12 +152,16 @@ export default function FieldView({ gameData }: FieldViewProps) {
                   key={player.id || index}
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                   transition={{ delay: index * 0.05 }}
-                  className={`bg-black/40 rounded-lg p-2 border ${
+                  onClick={() => handlePlayerClick(player)}
+                  className={`bg-black/40 rounded-lg p-2 border cursor-pointer transition-all duration-200 hover:shadow-lg hover:scale-105 ${
                     possessingTeam === 'patriots' 
-                      ? 'border-patriots-red bg-patriots-red/10' 
-                      : 'border-white/10'
+                      ? 'border-patriots-red bg-patriots-red/10 hover:bg-patriots-red/20' 
+                      : 'border-white/10 hover:border-white/30 hover:bg-white/5'
                   }`}
+                  title={`Click to search ${player.displayName || player.name || player.shortName} on Google`}
                 >
                   <div className="flex items-center gap-2">
                     {player.headshot && (
@@ -189,6 +207,9 @@ export default function FieldView({ gameData }: FieldViewProps) {
       <div className="mt-4 text-center">
         <p className="font-montserrat text-xs text-gray-500">
           🏈 indicates team with possession • Showing active players from ESPN roster data
+        </p>
+        <p className="font-montserrat text-xs text-gray-400 mt-1">
+          🔍 Click any player to search them on Google
         </p>
       </div>
     </motion.div>

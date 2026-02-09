@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PWA Install Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #1a1a2e;
+            color: white;
+        }
+        .status {
+            background: #333;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+        .success { background: #2d5a2d; }
+        .error { background: #5a2d2d; }
+        button {
+            background: #69be28;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #5a9e1f; }
+    </style>
+</head>
+<body>
+    <h1>🏈 Super Bowl PWA Install Test</h1>
+    
+    <div id="status" class="status">
+        Checking PWA compatibility...
+    </div>
+
+    <button onclick="checkManifest()">Check Manifest</button>
+    <button onclick="checkServiceWorker()">Check Service Worker</button>
+    <button onclick="installPWA()">Install PWA</button>
+    <button onclick="clearCache()">Clear Cache</button>
+
+    <div id="results"></div>
+
+    <script>
+        let deferredPrompt;
+
+        // Check if PWA is supported
+        function checkPWASupport() {
+            const status = document.getElementById('status');
+            if ('serviceWorker' in navigator && 'BeforeInstallPromptEvent' in window) {
+                status.className = 'status success';
+                status.innerHTML = '✅ PWA is fully supported!';
+            } else {
+                status.className = 'status error';
+                status.innerHTML = '❌ PWA not fully supported';
+            }
+        }
+
+        // Check manifest
+        async function checkManifest() {
+            try {
+                const response = await fetch('/manifest.json');
+                const manifest = await response.json();
+                document.getElementById('results').innerHTML = 
+                    `<h3>✅ Manifest Found:</h3><pre>${JSON.stringify(manifest, null, 2)}</pre>`;
+            } catch (error) {
+                document.getElementById('results').innerHTML = 
+                    `<h3>❌ Manifest Error:</h3><p>${error.message}</p>`;
+            }
+        }
+
+        // Check service worker
+        async function checkServiceWorker() {
+            const registrations = await navigator.serviceWorker.getRegistrations();
+            if (registrations.length > 0) {
+                document.getElementById('results').innerHTML = 
+                    `<h3>✅ Service Workers:</h3><ul>` +
+                    registrations.map(reg => 
+                        `<li>${reg.scope} - ${reg.active ? 'Active' : 'Not Active'}</li>`
+                    ).join('') + '</ul>';
+            } else {
+                document.getElementById('results').innerHTML = 
+                    '<h3>❌ No Service Workers Found</h3>';
+            }
+        }
+
+        // Install PWA
+        async function installPWA() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                console.log(`User response to the install prompt: ${outcome}`);
+                deferredPrompt = null;
+            } else {
+                document.getElementById('results').innerHTML = 
+                    '<h3>ℹ️ Install prompt not available. Try visiting the main app first.</h3>';
+            }
+        }
+
+        // Clear cache
+        async function clearCache() {
+            try {
+                const cacheNames = await caches.keys();
+                await Promise.all(cacheNames.map(name => caches.delete(name)));
+                document.getElementById('results').innerHTML = 
+                    '<h3>✅ Cache cleared</h3>';
+            } catch (error) {
+                document.getElementById('results').innerHTML = 
+                    `<h3>❌ Cache clear error:</h3><p>${error.message}</p>`;
+            }
+        }
+
+        // Listen for install prompt
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            document.getElementById('status').innerHTML += 
+                '<br>🎉 Install prompt ready! Click "Install PWA" button.';
+        });
+
+        // Listen for install success
+        window.addEventListener('appinstalled', () => {
+            document.getElementById('status').innerHTML = 
+                '✅ PWA successfully installed!';
+        });
+
+        // Initialize
+        checkPWASupport();
+    </script>
+</body>
+</html>
